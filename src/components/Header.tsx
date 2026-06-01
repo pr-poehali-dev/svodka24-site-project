@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import Icon from "@/components/ui/icon";
 
@@ -22,55 +22,93 @@ function getNow() {
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 60);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
     <>
-      <header className="sticky top-0 z-50 shadow-lg">
-        <div className="bg-black px-6 py-0">
-          <div className="max-w-screen-2xl mx-auto flex items-center h-20 gap-6">
-
-            {/* Гамбургер */}
-            <button
-              className="flex items-center gap-2 text-white/80 hover:text-white transition-colors shrink-0"
-              onClick={() => setMenuOpen(true)}
-              aria-label="Меню"
-            >
-              <Icon name="Menu" size={32} />
-            </button>
-
-            {/* Логотип */}
-            <Link to="/" className="shrink-0 leading-none">
-              <div className="text-white font-black text-3xl leading-none" style={{ fontFamily: "'Roboto Condensed', sans-serif" }}>
-                СВОДКА <span className="text-news-orange">24</span>
-              </div>
-              <div className="text-white/50 text-xs font-medium tracking-widest uppercase leading-none mt-1">
-                Усть-Кут
-              </div>
-            </Link>
-
-            <div className="flex-1" />
-
-            {/* Дата и время */}
-            <div className="shrink-0 text-white/50 text-sm text-right hidden sm:block">
-              {getNow()}
+      {/* Большая шапка — скрывается при скролле */}
+      <header
+        className={`bg-black w-full z-40 transition-all duration-300 ${
+          scrolled ? "h-0 overflow-hidden opacity-0" : "h-20 opacity-100"
+        }`}
+      >
+        <div className="max-w-screen-2xl mx-auto px-6 flex items-center h-20 gap-6">
+          <div className="w-8" />
+          <Link to="/" className="shrink-0 leading-none">
+            <div className="text-white font-black text-3xl leading-none" style={{ fontFamily: "'Roboto Condensed', sans-serif" }}>
+              СВОДКА <span className="text-news-orange">24</span>
             </div>
-          </div>
+            <div className="text-white/50 text-xs font-medium tracking-widest uppercase leading-none mt-1">
+              Усть-Кут
+            </div>
+          </Link>
+          <div className="flex-1" />
+          <div className="shrink-0 text-white/50 text-sm hidden sm:block">{getNow()}</div>
         </div>
       </header>
 
+      {/* Компактная фиксированная шапка */}
+      <div
+        className={`fixed top-0 left-0 w-full z-50 bg-black shadow-lg transition-all duration-300 ${
+          scrolled ? "h-12 opacity-100" : "h-20 opacity-100"
+        }`}
+      >
+        <div className="max-w-screen-2xl mx-auto px-6 flex items-center h-full gap-4">
+
+          {/* Гамбургер */}
+          <button
+            className="text-white/80 hover:text-white transition-colors shrink-0"
+            onClick={() => setMenuOpen(true)}
+            aria-label="Меню"
+          >
+            <Icon name="Menu" size={scrolled ? 22 : 32} className="transition-all duration-300" />
+          </button>
+
+          {/* Логотип */}
+          <Link to="/" className="shrink-0 leading-none">
+            {scrolled ? (
+              <div className="text-white font-black text-lg leading-none flex items-center gap-1" style={{ fontFamily: "'Roboto Condensed', sans-serif" }}>
+                СВОДКА <span className="text-news-orange">24</span>
+                <span className="text-white/40 text-xs font-normal tracking-widest uppercase ml-2">Усть-Кут</span>
+              </div>
+            ) : (
+              <>
+                <div className="text-white font-black text-3xl leading-none" style={{ fontFamily: "'Roboto Condensed', sans-serif" }}>
+                  СВОДКА <span className="text-news-orange">24</span>
+                </div>
+                <div className="text-white/50 text-xs font-medium tracking-widest uppercase leading-none mt-1">
+                  Усть-Кут
+                </div>
+              </>
+            )}
+          </Link>
+
+          <div className="flex-1" />
+
+          {!scrolled && (
+            <div className="shrink-0 text-white/50 text-sm hidden sm:block">{getNow()}</div>
+          )}
+        </div>
+      </div>
+
       {/* Затемнение */}
       <div
-        className={`fixed inset-0 z-50 bg-black/60 transition-opacity duration-300 ${menuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
+        className={`fixed inset-0 z-[60] bg-black/60 transition-opacity duration-300 ${menuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
         onClick={() => setMenuOpen(false)}
       />
 
       {/* Боковая панель */}
       <div
-        className={`fixed top-0 left-0 h-full w-72 z-50 bg-[#111] shadow-2xl flex flex-col transition-transform duration-300 ease-in-out ${menuOpen ? "translate-x-0" : "-translate-x-full"}`}
+        className={`fixed top-0 left-0 h-full w-72 z-[70] bg-[#111] shadow-2xl flex flex-col transition-transform duration-300 ease-in-out ${menuOpen ? "translate-x-0" : "-translate-x-full"}`}
       >
-        {/* Шапка панели */}
-        <div className="flex items-center justify-between px-5 h-20 border-b border-white/10 bg-black shrink-0">
+        <div className="flex items-center justify-between px-5 h-16 border-b border-white/10 bg-black shrink-0">
           <Link to="/" onClick={() => setMenuOpen(false)} className="leading-none">
             <div className="text-white font-black text-2xl leading-none" style={{ fontFamily: "'Roboto Condensed', sans-serif" }}>
               СВОДКА <span className="text-news-orange">24</span>
@@ -82,7 +120,6 @@ export default function Header() {
           </button>
         </div>
 
-        {/* Пункты меню */}
         <nav className="flex-1 py-3 overflow-y-auto">
           {navLinks.map((link) => (
             <Link
@@ -101,9 +138,8 @@ export default function Header() {
           ))}
         </nav>
 
-        {/* Низ панели */}
         <div className="px-6 py-5 border-t border-white/10 text-white/30 text-xs">
-          © 2024 СВОДКА 24 · Усть-Кут
+          © {new Date().getFullYear()} СВОДКА 24 · Усть-Кут
         </div>
       </div>
     </>

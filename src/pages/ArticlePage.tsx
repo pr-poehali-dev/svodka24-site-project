@@ -5,13 +5,34 @@ import ArticleCard from "@/components/ArticleCard";
 import CommentSection from "@/components/CommentSection";
 import Icon from "@/components/ui/icon";
 import { getArticleById, getRecentArticles } from "@/data/articles";
+import { useArticle, useArticles } from "@/hooks/useArticles";
 
 export default function ArticlePage() {
   const { id } = useParams<{ id: string }>();
-  const article = getArticleById(Number(id));
-  if (!article) return <Navigate to="/news" />;
+  const numId = Number(id);
 
-  const related = getRecentArticles(4, article.id);
+  const { article: apiArticle, loading } = useArticle(numId);
+  const { articles: apiAll } = useArticles();
+
+  const staticArticle = getArticleById(numId);
+  const article = apiArticle || staticArticle;
+
+  const staticRelated = getRecentArticles(4, numId);
+  const related = apiAll.length > 0
+    ? apiAll.filter(a => a.id !== numId).slice(0, 4)
+    : staticRelated;
+
+  if (loading) return (
+    <div className="min-h-screen flex flex-col bg-news-bg">
+      <Header />
+      <main className="flex-1 flex items-center justify-center">
+        <Icon name="Loader" size={32} className="animate-spin text-news-blue" />
+      </main>
+      <Footer />
+    </div>
+  );
+
+  if (!article) return <Navigate to="/news" />;
 
   const formattedDate = new Date(article.date).toLocaleDateString("ru-RU", {
     day: "numeric", month: "long", year: "numeric",

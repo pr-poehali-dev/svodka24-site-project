@@ -3,13 +3,19 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ArticleCard from "@/components/ArticleCard";
 import Icon from "@/components/ui/icon";
-import { articles, categories, getFeaturedArticle } from "@/data/articles";
+import { articles as staticArticles, categories, getFeaturedArticle } from "@/data/articles";
+import { useArticles } from "@/hooks/useArticles";
 
 export default function Index() {
-  const featured = getFeaturedArticle();
-  const gridNews = articles.filter((a) => a.id !== featured.id).slice(0, 3);
+  const { articles: apiArticles, loading } = useArticles();
+  const articles = apiArticles.length > 0 ? apiArticles : staticArticles;
+
+  const featured = articles.find(a => a.featured) || articles[0];
+  const gridNews = articles.filter((a) => a.id !== featured?.id).slice(0, 3);
   const latestNews = articles.slice(0, 7);
   const popularNews = [...articles].sort((a, b) => b.views - a.views).slice(0, 5);
+
+  if (!featured) return null;
 
   return (
     <div className="min-h-screen flex flex-col bg-news-bg">
@@ -17,6 +23,13 @@ export default function Index() {
 
       <main className="flex-1">
         <div className="max-w-6xl mx-auto px-4 py-5">
+
+          {loading && (
+            <div className="flex items-center gap-2 text-xs text-news-gray mb-4">
+              <Icon name="Loader" size={13} className="animate-spin text-news-blue" />
+              Загрузка новостей...
+            </div>
+          )}
 
           {/* Топ */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">

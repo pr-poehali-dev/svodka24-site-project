@@ -1,0 +1,12 @@
+CREATE TABLE IF NOT EXISTS articles (
+  id SERIAL PRIMARY KEY,
+  title TEXT NOT NULL,
+  excerpt TEXT NOT NULL,
+  content TEXT NOT NULL,
+  category TEXT NOT NULL,
+  date DATE NOT NULL DEFAULT CURRENT_DATE,
+  author TEXT NOT NULL DEFAULT 'Редакция СВОДКА 24',
+  views INTEGER NOT NULL DEFAULT 0,
+  featured BOOLEAN NOT NULL DEFAULT FALSE,
+  image TEXT
+);

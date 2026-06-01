@@ -2,7 +2,7 @@ import { useParams, Link, Navigate } from "react-router-dom";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ArticleCard from "@/components/ArticleCard";
-import CommentSection from "@/components/CommentSection";
+
 import Icon from "@/components/ui/icon";
 import { getArticleById, getRecentArticles } from "@/data/articles";
 import { useArticle, useArticles } from "@/hooks/useArticles";
@@ -96,7 +96,7 @@ export default function ArticlePage() {
                   </button>
                 </div>
 
-                <CommentSection articleId={article.id} />
+
               </div>
             </div>
 

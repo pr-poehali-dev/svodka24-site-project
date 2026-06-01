@@ -12,6 +12,7 @@ import ContactsPage from "./pages/ContactsPage";
 import ArticlePage from "./pages/ArticlePage";
 import AdminPage from "./pages/AdminPage";
 import NotFound from "./pages/NotFound";
+import SocialSidebar from "./components/SocialSidebar";
 
 const queryClient = new QueryClient();
 
@@ -21,6 +22,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <SocialSidebar />
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/news" element={<NewsPage />} />

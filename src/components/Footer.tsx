@@ -10,9 +10,11 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-6">
           <div>
             <div className="flex items-center gap-2 mb-3">
-              <div className="w-8 h-8 flex items-center justify-center rounded font-black text-xs bg-news-orange text-news-blue-dark" style={{ fontFamily: "'Roboto Condensed', sans-serif" }}>
-                С24
-              </div>
+              <img
+                src="https://cdn.poehali.dev/projects/0589c48d-6b6a-42bf-a296-e4c2f31df20b/bucket/4c9fb864-06bd-46fc-8e04-6c53903a73de.jpg"
+                alt="СВОДКА 24 Усть-Кут"
+                className="h-9 w-9 rounded object-cover"
+              />
               <div>
                 <div className="font-black text-base leading-none" style={{ fontFamily: "'Roboto Condensed', sans-serif" }}>СВОДКА 24</div>
                 <div className="text-news-orange text-xs leading-none">УСТЬ-КУТ</div>

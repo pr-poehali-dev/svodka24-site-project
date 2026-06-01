@@ -21,9 +21,11 @@ export default function Header() {
       <div className="bg-news-blue-dark px-4 py-3">
         <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
           <Link to="/" className="flex items-center gap-2 shrink-0">
-            <div className="w-9 h-9 flex items-center justify-center rounded font-black text-sm bg-news-orange text-news-blue-dark" style={{ fontFamily: "'Roboto Condensed', sans-serif" }}>
-              С24
-            </div>
+            <img
+              src="https://cdn.poehali.dev/projects/0589c48d-6b6a-42bf-a296-e4c2f31df20b/bucket/4c9fb864-06bd-46fc-8e04-6c53903a73de.jpg"
+              alt="СВОДКА 24 Усть-Кут"
+              className="h-10 w-10 rounded object-cover"
+            />
             <div>
               <div className="text-white font-black text-lg leading-none" style={{ fontFamily: "'Roboto Condensed', sans-serif" }}>
                 СВОДКА 24

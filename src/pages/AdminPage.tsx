@@ -128,7 +128,7 @@ export default function AdminPage() {
         <div className="w-full max-w-sm">
           <div className="text-center mb-6">
             <div className="inline-flex items-center gap-2 mb-3">
-              <div className="w-10 h-10 flex items-center justify-center rounded font-black text-sm bg-news-orange text-news-blue-dark" style={{ fontFamily: "'Roboto Condensed', sans-serif" }}>С24</div>
+              <img src="https://cdn.poehali.dev/projects/0589c48d-6b6a-42bf-a296-e4c2f31df20b/bucket/4c9fb864-06bd-46fc-8e04-6c53903a73de.jpg" alt="СВОДКА 24" className="h-10 w-10 rounded object-cover" />
               <span className="font-black text-xl text-news-text" style={{ fontFamily: "'Roboto Condensed', sans-serif" }}>СВОДКА 24</span>
             </div>
             <h1 className="font-black text-2xl text-news-text" style={{ fontFamily: "'Roboto Condensed', sans-serif" }}>Панель редактора</h1>
@@ -165,7 +165,7 @@ export default function AdminPage() {
       <div className="bg-news-blue-dark text-white px-4 py-3 sticky top-0 z-50 shadow">
         <div className="max-w-5xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 flex items-center justify-center rounded font-black text-xs bg-news-orange text-news-blue-dark" style={{ fontFamily: "'Roboto Condensed', sans-serif" }}>С24</div>
+            <img src="https://cdn.poehali.dev/projects/0589c48d-6b6a-42bf-a296-e4c2f31df20b/bucket/4c9fb864-06bd-46fc-8e04-6c53903a73de.jpg" alt="СВОДКА 24" className="h-8 w-8 rounded object-cover" />
             <span className="font-black text-base" style={{ fontFamily: "'Roboto Condensed', sans-serif" }}>Панель редактора</span>
           </div>
           <div className="flex items-center gap-3">

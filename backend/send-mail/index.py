@@ -1,6 +1,9 @@
 import os
 import json
+import uuid
+import base64
 import smtplib
+import boto3
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
@@ -18,8 +21,20 @@ SUBJECTS = {
     'other': 'Другое',
 }
 
+def upload_file(file_data, filename, content_type):
+    ext = filename.rsplit('.', 1)[-1].lower() if '.' in filename else 'bin'
+    key = f"contacts/{uuid.uuid4()}.{ext}"
+    s3 = boto3.client(
+        's3',
+        endpoint_url='https://bucket.poehali.dev',
+        aws_access_key_id=os.environ['AWS_ACCESS_KEY_ID'],
+        aws_secret_access_key=os.environ['AWS_SECRET_ACCESS_KEY']
+    )
+    s3.put_object(Bucket='files', Key=key, Body=base64.b64decode(file_data), ContentType=content_type)
+    return f"https://cdn.poehali.dev/projects/{os.environ['AWS_ACCESS_KEY_ID']}/bucket/{key}"
+
 def handler(event: dict, context) -> dict:
-    """Отправка сообщения с формы контактов на почту редакции info.svodka24ustkut@mail.ru."""
+    """Отправка сообщения с формы контактов на почту редакции. Поддерживает прикреплённые файлы (фото/видео)."""
     if event.get('httpMethod') == 'OPTIONS':
         return {'statusCode': 200, 'headers': CORS, 'body': ''}
 
@@ -29,11 +44,29 @@ def handler(event: dict, context) -> dict:
     phone = body.get('phone', '')
     subject_key = body.get('subject', 'other')
     message = body.get('message', '')
+    files = body.get('files', [])  # [{data, filename, content_type}]
 
     if not name or not email or not message:
         return {'statusCode': 400, 'headers': CORS, 'body': json.dumps({'error': 'Заполните обязательные поля'})}
 
     subject_label = SUBJECTS.get(subject_key, 'Другое')
+
+    # Загружаем файлы в S3
+    file_urls = []
+    for f in files:
+        try:
+            url = upload_file(f['data'], f['filename'], f.get('content_type', 'application/octet-stream'))
+            file_urls.append({'name': f['filename'], 'url': url})
+        except Exception:
+            pass
+
+    # Формируем блок с файлами
+    files_html = ''
+    if file_urls:
+        files_html = '<div style="margin-top:20px;padding:16px;background:#f5f7fa;border-left:4px solid #FF6D00;border-radius:4px;"><b style="color:#546e7a;">Прикреплённые файлы:</b><ul style="margin-top:8px;padding-left:16px;">'
+        for f in file_urls:
+            files_html += f'<li style="margin-bottom:6px;"><a href="{f["url"]}" style="color:#1565C0;">{f["name"]}</a></li>'
+        files_html += '</ul></div>'
 
     mail_from = os.environ['MAIL_FROM']
     mail_password = os.environ['MAIL_PASSWORD']
@@ -60,6 +93,7 @@ def handler(event: dict, context) -> dict:
         <b style="color: #546e7a;">Сообщение:</b>
         <p style="margin-top: 8px; color: #1a1a2e; line-height: 1.6;">{message.replace(chr(10), '<br>')}</p>
       </div>
+      {files_html}
       <p style="margin-top: 20px; font-size: 12px; color: #999;">Письмо отправлено с сайта svodka24-site-project.poehali.dev</p>
     </div>
     """

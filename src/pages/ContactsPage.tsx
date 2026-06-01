@@ -7,6 +7,7 @@ const SEND_MAIL_URL = "https://functions.poehali.dev/c2fca549-e91a-40cf-8a9f-bf3
 
 export default function ContactsPage() {
   const [form, setForm] = useState({ name: "", email: "", phone: "", subject: "", message: "" });
+  const [files, setFiles] = useState<File[]>([]);
   const [sent, setSent] = useState(false);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState("");
@@ -15,20 +16,39 @@ export default function ContactsPage() {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
+  const handleFiles = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selected = Array.from(e.target.files || []);
+    setFiles(prev => [...prev, ...selected].slice(0, 5));
+  };
+
+  const removeFile = (idx: number) => setFiles(prev => prev.filter((_, i) => i !== idx));
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSending(true);
     setError("");
     try {
+      // Конвертируем файлы в base64
+      const filesData = await Promise.all(files.map(f => new Promise<{data: string, filename: string, content_type: string}>((resolve) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve({
+          data: (reader.result as string).split(',')[1],
+          filename: f.name,
+          content_type: f.type,
+        });
+        reader.readAsDataURL(f);
+      })));
+
       const res = await fetch(SEND_MAIL_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, files: filesData }),
       });
       const data = await res.json();
       if (!res.ok) { setError(data.error || "Ошибка отправки"); return; }
       setSent(true);
       setForm({ name: "", email: "", phone: "", subject: "", message: "" });
+      setFiles([]);
       setTimeout(() => setSent(false), 6000);
     } catch {
       setError("Не удалось отправить. Попробуйте позже.");
@@ -96,6 +116,32 @@ export default function ContactsPage() {
                     className="w-full border border-news-border rounded px-3 py-2 text-sm focus:outline-none resize-none"
                     placeholder="Опишите вашу новость или вопрос..." />
                 </div>
+
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-news-gray mb-1.5">
+                    Фото / Видео <span className="font-normal normal-case text-news-gray">(до 5 файлов)</span>
+                  </label>
+                  <label className="flex items-center gap-2 px-4 py-2.5 rounded border-2 border-dashed border-news-border bg-news-bg cursor-pointer hover:border-news-blue transition-colors w-fit">
+                    <Icon name="Paperclip" size={15} className="text-news-blue" />
+                    <span className="text-sm text-news-gray">Прикрепить файлы</span>
+                    <input type="file" multiple accept="image/*,video/*" className="hidden" onChange={handleFiles} />
+                  </label>
+                  {files.length > 0 && (
+                    <div className="mt-2 space-y-1.5">
+                      {files.map((f, i) => (
+                        <div key={i} className="flex items-center gap-2 text-xs bg-white border border-news-border rounded px-3 py-1.5">
+                          <Icon name={f.type.startsWith('video') ? "Video" : "Image"} size={13} className="text-news-blue shrink-0" />
+                          <span className="truncate flex-1 text-news-text">{f.name}</span>
+                          <span className="text-news-gray shrink-0">{(f.size / 1024 / 1024).toFixed(1)} МБ</span>
+                          <button type="button" onClick={() => removeFile(i)} className="text-news-gray hover:text-red-500 transition-colors shrink-0">
+                            <Icon name="X" size={13} />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
                 {error && (
                   <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 text-sm rounded flex items-center gap-2">
                     <Icon name="AlertCircle" size={15} />{error}

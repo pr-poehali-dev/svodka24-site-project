@@ -3,12 +3,12 @@ import { Link, useLocation } from "react-router-dom";
 import Icon from "@/components/ui/icon";
 
 const navLinks = [
-  { label: "Главная", path: "/" },
-  { label: "Новости", path: "/news" },
-  { label: "Рубрики", path: "/categories" },
-  { label: "Архив", path: "/archive" },
-  { label: "О нас", path: "/about" },
-  { label: "Контакты", path: "/contacts" },
+  { label: "Главная", path: "/", icon: "Home" },
+  { label: "Новости", path: "/news", icon: "Newspaper" },
+  { label: "Рубрики", path: "/categories", icon: "LayoutGrid" },
+  { label: "Архив", path: "/archive", icon: "Archive" },
+  { label: "О нас", path: "/about", icon: "Info" },
+  { label: "Контакты", path: "/contacts", icon: "Mail" },
 ];
 
 function getNow() {
@@ -25,61 +25,87 @@ export default function Header() {
   const location = useLocation();
 
   return (
-    <header className="sticky top-0 z-50 shadow-lg">
+    <>
+      <header className="sticky top-0 z-50 shadow-lg">
+        <div className="bg-black px-6 py-0">
+          <div className="max-w-screen-2xl mx-auto flex items-center h-20 gap-6">
 
-      {/* Верхняя полоса */}
-      <div className="bg-black px-6 py-0">
-        <div className="max-w-screen-2xl mx-auto flex items-center h-20 gap-6">
+            {/* Гамбургер */}
+            <button
+              className="flex items-center gap-2 text-white/80 hover:text-white transition-colors shrink-0"
+              onClick={() => setMenuOpen(true)}
+              aria-label="Меню"
+            >
+              <Icon name="Menu" size={32} />
+            </button>
 
-          {/* Гамбургер */}
-          <button
-            className="flex items-center gap-2 text-white/80 hover:text-white transition-colors shrink-0"
-            onClick={() => setMenuOpen(!menuOpen)}
-            aria-label="Меню"
-          >
-            <Icon name={menuOpen ? "X" : "Menu"} size={32} />
-          </button>
+            {/* Логотип */}
+            <Link to="/" className="shrink-0 leading-none">
+              <div className="text-white font-black text-3xl leading-none" style={{ fontFamily: "'Roboto Condensed', sans-serif" }}>
+                СВОДКА <span className="text-news-orange">24</span>
+              </div>
+              <div className="text-white/50 text-xs font-medium tracking-widest uppercase leading-none mt-1">
+                Усть-Кут
+              </div>
+            </Link>
 
-          {/* Логотип */}
-          <Link to="/" className="shrink-0 leading-none">
-            <div className="text-white font-black text-3xl leading-none" style={{ fontFamily: "'Roboto Condensed', sans-serif" }}>
+            <div className="flex-1" />
+
+            {/* Дата и время */}
+            <div className="shrink-0 text-white/50 text-sm text-right hidden sm:block">
+              {getNow()}
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Затемнение */}
+      <div
+        className={`fixed inset-0 z-50 bg-black/60 transition-opacity duration-300 ${menuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
+        onClick={() => setMenuOpen(false)}
+      />
+
+      {/* Боковая панель */}
+      <div
+        className={`fixed top-0 left-0 h-full w-72 z-50 bg-[#111] shadow-2xl flex flex-col transition-transform duration-300 ease-in-out ${menuOpen ? "translate-x-0" : "-translate-x-full"}`}
+      >
+        {/* Шапка панели */}
+        <div className="flex items-center justify-between px-5 h-20 border-b border-white/10 bg-black shrink-0">
+          <Link to="/" onClick={() => setMenuOpen(false)} className="leading-none">
+            <div className="text-white font-black text-2xl leading-none" style={{ fontFamily: "'Roboto Condensed', sans-serif" }}>
               СВОДКА <span className="text-news-orange">24</span>
             </div>
-            <div className="text-white/50 text-xs font-medium tracking-widest uppercase leading-none mt-1">
-              Усть-Кут
-            </div>
+            <div className="text-white/40 text-[10px] tracking-widest uppercase mt-0.5">Усть-Кут</div>
           </Link>
+          <button onClick={() => setMenuOpen(false)} className="text-white/60 hover:text-white transition-colors">
+            <Icon name="X" size={24} />
+          </button>
+        </div>
 
-          <div className="flex-1" />
+        {/* Пункты меню */}
+        <nav className="flex-1 py-3 overflow-y-auto">
+          {navLinks.map((link) => (
+            <Link
+              key={link.path}
+              to={link.path}
+              onClick={() => setMenuOpen(false)}
+              className={`flex items-center gap-4 px-6 py-4 text-base font-medium border-b border-white/5 transition-colors ${
+                location.pathname === link.path
+                  ? "text-news-orange bg-white/5"
+                  : "text-white/80 hover:text-white hover:bg-white/5"
+              }`}
+            >
+              <Icon name={link.icon} size={20} className="shrink-0 opacity-60" />
+              {link.label}
+            </Link>
+          ))}
+        </nav>
 
-          {/* Дата и время */}
-          <div className="shrink-0 text-white/50 text-sm text-right hidden sm:block">
-            {getNow()}
-          </div>
+        {/* Низ панели */}
+        <div className="px-6 py-5 border-t border-white/10 text-white/30 text-xs">
+          © 2024 СВОДКА 24 · Усть-Кут
         </div>
       </div>
-
-      {/* Выпадающее меню из гамбургера */}
-      {menuOpen && (
-        <div className="bg-[#111] border-t border-white/10 absolute w-full left-0 shadow-xl">
-          <div className="max-w-6xl mx-auto px-4 py-2">
-            {navLinks.map((link) => (
-              <Link
-                key={link.path}
-                to={link.path}
-                onClick={() => setMenuOpen(false)}
-                className={`flex items-center px-3 py-3 text-sm font-medium border-b border-white/10 last:border-0 transition-colors ${
-                  location.pathname === link.path
-                    ? "text-news-orange font-bold"
-                    : "text-white/80 hover:text-white"
-                }`}
-              >
-                {link.label}
-              </Link>
-            ))}
-          </div>
-        </div>
-      )}
-    </header>
+    </>
   );
 }

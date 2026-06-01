@@ -31,16 +31,6 @@ export default function Header() {
       <div className="bg-black px-4 py-0">
         <div className="max-w-6xl mx-auto flex items-center h-14 gap-4">
 
-          {/* Логотип слева */}
-          <Link to="/" className="shrink-0 leading-none">
-            <div className="text-white font-black text-xl leading-none" style={{ fontFamily: "'Roboto Condensed', sans-serif" }}>
-              СВОДКА <span className="text-news-orange">24</span>
-            </div>
-            <div className="text-white/50 text-[10px] font-medium tracking-widest uppercase leading-none mt-0.5">
-              Усть-Кут
-            </div>
-          </Link>
-
           {/* Гамбургер */}
           <button
             className="flex items-center gap-2 text-white/80 hover:text-white transition-colors shrink-0"
@@ -49,6 +39,16 @@ export default function Header() {
           >
             <Icon name={menuOpen ? "X" : "Menu"} size={22} />
           </button>
+
+          {/* Логотип */}
+          <Link to="/" className="shrink-0 leading-none">
+            <div className="text-white font-black text-xl leading-none" style={{ fontFamily: "'Roboto Condensed', sans-serif" }}>
+              СВОДКА <span className="text-news-orange">24</span>
+            </div>
+            <div className="text-white/50 text-[10px] font-medium tracking-widest uppercase leading-none mt-0.5">
+              Усть-Кут
+            </div>
+          </Link>
 
           <div className="flex-1" />
 

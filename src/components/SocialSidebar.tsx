@@ -32,11 +32,15 @@ const socials = [
   {
     label: "MAX",
     url: "https://max.ru/join/P_HfSBqoL1_EzOFrrv_IeuUQ7u55zTDXVB0p-ODUk6E",
-    color: "#FF4B4B",
+    color: "#FFFFFF",
     icon: (
-      <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
-        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/>
-      </svg>
+      <img
+        src="https://cdn.poehali.dev/projects/0589c48d-6b6a-42bf-a296-e4c2f31df20b/bucket/5ebd938d-04d7-4ae1-959e-ffcc82182d86.jpg"
+        alt="MAX"
+        width="28"
+        height="28"
+        className="rounded-lg"
+      />
     ),
   },
 ];

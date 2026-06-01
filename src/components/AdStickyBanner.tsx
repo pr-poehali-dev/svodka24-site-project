@@ -9,7 +9,7 @@ export default function AdStickyBanner() {
   return (
     <div className="fixed right-0 top-1/2 -translate-y-1/2 z-40">
       <div
-        className="flex rounded-l-2xl shadow-2xl p-3 sm:p-5 w-36 sm:w-56 flex-col gap-2 sm:gap-3"
+        className="flex rounded-l-2xl shadow-2xl p-4 sm:p-5 w-48 sm:w-56 flex-col gap-2 sm:gap-3"
         style={{ background: "linear-gradient(160deg, #0a0a0a 0%, #1a1a2e 60%, #c0390a 100%)" }}
       >
         <div className="flex items-start justify-between">

@@ -12,6 +12,7 @@ import ContactsPage from "./pages/ContactsPage";
 import ArticlePage from "./pages/ArticlePage";
 import AdminPage from "./pages/AdminPage";
 import NotFound from "./pages/NotFound";
+import AdStickyBanner from "./components/AdStickyBanner";
 
 
 const queryClient = new QueryClient();
@@ -22,6 +23,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <AdStickyBanner />
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/news" element={<NewsPage />} />

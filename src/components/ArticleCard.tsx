@@ -31,12 +31,12 @@ export default function ArticleCard({ article, variant = "default" }: ArticleCar
   if (variant === "featured") {
     return (
       <Link to={`/article/${article.id}`} className="news-card block group">
-        <div className="aspect-video bg-gray-100 relative flex items-center justify-center overflow-hidden">
+        <div className="aspect-square bg-gray-100 relative flex items-center justify-center overflow-hidden">
           {article.image
-            ? <img src={article.image} alt={article.title} className="absolute inset-0 w-full h-full object-cover" />
+            ? <img src={article.image} alt={article.title} className="absolute inset-0 w-full h-full object-contain" />
             : <Icon name="Newspaper" size={48} className="text-gray-300" />
           }
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent flex flex-col justify-end p-5">
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent flex flex-col justify-end p-5">
             <span className="text-xs font-bold uppercase px-2 py-0.5 rounded mb-2 inline-block w-fit bg-news-orange text-news-blue-dark">
               {article.category}
             </span>
@@ -59,8 +59,8 @@ export default function ArticleCard({ article, variant = "default" }: ArticleCar
   if (variant === "grid") {
     return (
       <Link to={`/article/${article.id}`} className="news-card block group">
-        <div className="h-36 bg-gray-100 flex items-center justify-center relative overflow-hidden">
-          {article.image && <img src={article.image} alt={article.title} className="absolute inset-0 w-full h-full object-cover" />}
+        <div className="aspect-square bg-gray-100 flex items-center justify-center relative overflow-hidden">
+          {article.image && <img src={article.image} alt={article.title} className="absolute inset-0 w-full h-full object-contain" />}
           {!article.image && <Icon name="Newspaper" size={32} className="text-gray-300" />}
         </div>
         <div className="p-3">

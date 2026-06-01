@@ -33,14 +33,16 @@ export default function Header() {
 
   return (
     <>
-      {/* Большая шапка — скрывается при скролле */}
-      <header
-        className={`bg-black w-full z-40 transition-all duration-300 ${
-          scrolled ? "h-0 overflow-hidden opacity-0" : "h-20 opacity-100"
-        }`}
-      >
+      {/* Полная шапка */}
+      <header className="bg-black w-full z-40">
         <div className="max-w-screen-2xl mx-auto px-6 flex items-center h-20 gap-6">
-          <div className="w-8" />
+          <button
+            className="text-white/80 hover:text-white transition-colors shrink-0"
+            onClick={() => setMenuOpen(true)}
+            aria-label="Меню"
+          >
+            <Icon name="Menu" size={32} />
+          </button>
           <Link to="/" className="shrink-0 leading-none">
             <div className="text-white font-black text-3xl leading-none" style={{ fontFamily: "'Roboto Condensed', sans-serif" }}>
               СВОДКА <span className="text-news-orange">24</span>
@@ -54,48 +56,24 @@ export default function Header() {
         </div>
       </header>
 
-      {/* Компактная фиксированная шапка */}
+      {/* Компактный квадрат — появляется при скролле, прилипает слева */}
       <div
-        className={`fixed top-0 left-0 w-full z-50 bg-black shadow-lg transition-all duration-300 ${
-          scrolled ? "h-12 opacity-100" : "h-20 opacity-100"
+        className={`fixed top-0 left-0 z-50 bg-black shadow-lg flex items-center gap-3 px-3 transition-all duration-300 ${
+          scrolled ? "h-12 w-auto opacity-100 pointer-events-auto" : "h-0 w-0 opacity-0 pointer-events-none overflow-hidden"
         }`}
       >
-        <div className="max-w-screen-2xl mx-auto px-6 flex items-center h-full gap-4">
-
-          {/* Гамбургер */}
-          <button
-            className="text-white/80 hover:text-white transition-colors shrink-0"
-            onClick={() => setMenuOpen(true)}
-            aria-label="Меню"
-          >
-            <Icon name="Menu" size={scrolled ? 22 : 32} className="transition-all duration-300" />
-          </button>
-
-          {/* Логотип */}
-          <Link to="/" className="shrink-0 leading-none">
-            {scrolled ? (
-              <div className="text-white font-black text-lg leading-none flex items-center gap-1" style={{ fontFamily: "'Roboto Condensed', sans-serif" }}>
-                СВОДКА <span className="text-news-orange">24</span>
-                <span className="text-white/40 text-xs font-normal tracking-widest uppercase ml-2">Усть-Кут</span>
-              </div>
-            ) : (
-              <>
-                <div className="text-white font-black text-3xl leading-none" style={{ fontFamily: "'Roboto Condensed', sans-serif" }}>
-                  СВОДКА <span className="text-news-orange">24</span>
-                </div>
-                <div className="text-white/50 text-xs font-medium tracking-widest uppercase leading-none mt-1">
-                  Усть-Кут
-                </div>
-              </>
-            )}
-          </Link>
-
-          <div className="flex-1" />
-
-          {!scrolled && (
-            <div className="shrink-0 text-white/50 text-sm hidden sm:block">{getNow()}</div>
-          )}
-        </div>
+        <button
+          className="text-white/80 hover:text-white transition-colors shrink-0"
+          onClick={() => setMenuOpen(true)}
+          aria-label="Меню"
+        >
+          <Icon name="Menu" size={20} />
+        </button>
+        <Link to="/" className="shrink-0 leading-none whitespace-nowrap">
+          <span className="text-white font-black text-base" style={{ fontFamily: "'Roboto Condensed', sans-serif" }}>
+            СВОДКА <span className="text-news-orange">24</span>
+          </span>
+        </Link>
       </div>
 
       {/* Затемнение */}

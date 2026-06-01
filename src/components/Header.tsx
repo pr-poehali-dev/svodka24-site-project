@@ -23,6 +23,7 @@ function getNow() {
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [bellOpen, setBellOpen] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
@@ -72,6 +73,40 @@ export default function Header() {
                 {s.icon}
               </a>
             ))}
+          </div>
+
+          {/* Колокольчик */}
+          <div className="relative shrink-0">
+            <button
+              onClick={() => setMenuOpen(menuOpen ? false : menuOpen)}
+              id="bell-btn"
+              className="relative text-white/70 hover:text-white transition-colors"
+              title="Подписаться на новости"
+              onClick={() => {
+                const popup = document.getElementById('bell-popup');
+                if (popup) popup.classList.toggle('hidden');
+              }}
+            >
+              <Icon name="Bell" size={24} />
+              <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-news-orange rounded-full animate-pulse" />
+            </button>
+            <div id="bell-popup" className="hidden absolute right-0 top-10 w-64 bg-white rounded-xl shadow-2xl p-4 z-50 border border-gray-100">
+              <p className="font-black text-sm text-news-text mb-1" style={{ fontFamily: "'Roboto Condensed', sans-serif" }}>
+                🔔 Будьте первыми!
+              </p>
+              <p className="text-xs text-news-gray mb-3 leading-relaxed">
+                Подпишитесь на наш Telegram-канал и получайте новости Усть-Кута мгновенно
+              </p>
+              <a
+                href="https://t.me/svodka24ustkut"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2 w-full py-2 rounded-lg bg-[#26A5E4] text-white text-xs font-bold hover:opacity-90 transition-opacity"
+              >
+                <img src="https://cdn.poehali.dev/projects/0589c48d-6b6a-42bf-a296-e4c2f31df20b/bucket/86f74599-61f0-4ba4-bf07-497c6e273d23.png" width="16" height="16" alt="" />
+                Подписаться в Telegram
+              </a>
+            </div>
           </div>
 
           <div className="shrink-0 text-white/50 text-sm hidden lg:block">{getNow()}</div>

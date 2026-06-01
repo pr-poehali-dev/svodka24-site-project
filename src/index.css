@@ -26,16 +26,6 @@
     --input: 210 20% 85%;
     --ring: 213 85% 38%;
     --radius: 0.375rem;
-
-    --blue: #1565c0;
-    --blue-dark: #0d47a1;
-    --blue-light: #1976d2;
-    --yellow: #ff6d00;
-    --yellow-dark: #e65100;
-    --text-dark: #1a1a2e;
-    --text-gray: #546e7a;
-    --bg-gray: #f0f4f8;
-    --border-color: #dce3ea;
   }
 }
 
@@ -44,7 +34,7 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-news-bg text-news-text;
     font-family: "Roboto", sans-serif;
   }
   h1,
@@ -58,34 +48,25 @@
 
 @layer components {
   .news-card {
-    background: white;
-    border-radius: 6px;
-    overflow: hidden;
+    @apply bg-white rounded-md border border-news-border;
     transition:
       box-shadow 0.2s,
       transform 0.15s;
-    border: 1px solid var(--border-color);
   }
   .news-card:hover {
-    box-shadow: 0 4px 16px rgba(21, 101, 192, 0.13);
+    box-shadow: 0 4px 16px rgba(13, 71, 161, 0.13);
     transform: translateY(-2px);
   }
   .tag {
+    @apply text-news-blue font-bold uppercase;
     font-size: 0.68rem;
-    font-weight: 700;
-    text-transform: uppercase;
     letter-spacing: 0.06em;
-    color: var(--blue);
     font-family: "Roboto Condensed", sans-serif;
   }
   .section-title {
+    @apply font-bold uppercase text-news-text border-l-4 border-news-orange pl-2.5;
     font-family: "Roboto Condensed", sans-serif;
-    font-weight: 700;
     font-size: 1rem;
-    text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: var(--text-dark);
-    border-left: 3px solid var(--yellow);
-    padding-left: 10px;
   }
 }

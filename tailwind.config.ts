@@ -20,6 +20,15 @@ export default {
 		},
 		extend: {
 			colors: {
+				'news-blue': '#1565C0',
+				'news-blue-dark': '#0D47A1',
+				'news-blue-light': '#1976D2',
+				'news-orange': '#FF6D00',
+				'news-orange-dark': '#E65100',
+				'news-text': '#1a1a2e',
+				'news-gray': '#546e7a',
+				'news-bg': '#f0f4f8',
+				'news-border': '#dce3ea',
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
 				ring: 'hsl(var(--ring))',

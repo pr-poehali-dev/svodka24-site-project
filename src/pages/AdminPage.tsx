@@ -4,6 +4,7 @@ import Icon from "@/components/ui/icon";
 import { categories } from "@/data/articles";
 
 const API_URL = "https://functions.poehali.dev/2cdc5e6d-7a6f-402b-baa5-6bbb647f3a5d";
+const UPLOAD_URL = "https://functions.poehali.dev/9ef5d74f-c930-433d-8dbe-642c7b97db7d";
 
 interface Article {
   id: number;
@@ -38,6 +39,7 @@ export default function AdminPage() {
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
   const [tab, setTab] = useState<"list" | "add">("list");
+  const [uploading, setUploading] = useState(false);
 
   const fetchArticles = async (adminKey: string) => {
     setLoading(true);
@@ -83,6 +85,28 @@ export default function AdminPage() {
       ...prev,
       [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value,
     }));
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    try {
+      const reader = new FileReader();
+      reader.onload = async () => {
+        const base64 = (reader.result as string).split(',')[1];
+        const res = await fetch(UPLOAD_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ file: base64, filename: file.name, content_type: file.type }),
+        });
+        const data = await res.json();
+        if (data.url) setForm(prev => ({ ...prev, image: data.url }));
+      };
+      reader.readAsDataURL(file);
+    } finally {
+      setUploading(false);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -313,12 +337,20 @@ export default function AdminPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-news-gray mb-1.5">Ссылка на фото</label>
+              <label className="block text-xs font-bold uppercase tracking-wider text-news-gray mb-1.5">Фото к новости</label>
+              <div className="flex gap-2 items-center mb-2">
+                <label className={`flex items-center gap-2 px-4 py-2 rounded border cursor-pointer text-sm font-medium transition-colors ${uploading ? 'bg-news-bg text-news-gray border-news-border' : 'bg-news-blue text-white border-news-blue hover:opacity-90'}`}>
+                  <Icon name={uploading ? "Loader" : "Upload"} size={15} className={uploading ? "animate-spin" : ""} />
+                  {uploading ? "Загружаю..." : "Загрузить фото"}
+                  <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} disabled={uploading} />
+                </label>
+                <span className="text-xs text-news-gray">или вставь ссылку:</span>
+              </div>
               <input name="image" value={form.image} onChange={handleChange}
                 className="w-full border border-news-border rounded px-3 py-2.5 text-sm focus:outline-none focus:border-news-blue"
                 placeholder="https://..." />
               {form.image && (
-                <img src={form.image} alt="preview" className="mt-2 h-32 rounded object-cover border border-news-border" />
+                <img src={form.image} alt="preview" className="mt-2 h-32 w-full rounded object-cover border border-news-border" />
               )}
             </div>
 

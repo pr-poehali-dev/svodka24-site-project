@@ -154,8 +154,7 @@ export default function Header() {
                 target="_blank"
                 rel="noopener noreferrer"
                 title={s.label}
-                className="flex items-center justify-center w-10 h-10 rounded-xl text-white hover:opacity-80 transition-opacity"
-                style={{ backgroundColor: s.color }}
+                className="flex items-center justify-center w-10 h-10 rounded-xl hover:opacity-80 transition-opacity"
               >
                 {s.icon}
               </a>

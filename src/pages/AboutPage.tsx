@@ -104,12 +104,15 @@ export default function AboutPage() {
                 <h3 className="section-title mb-3">Соцсети</h3>
                 <div className="space-y-2">
                   {[
-                    { icon: "Send", label: "Telegram-канал" },
-                    { icon: "Globe", label: "ВКонтакте" },
-                    { icon: "Youtube", label: "YouTube" },
+                    { img: "https://cdn.poehali.dev/projects/0589c48d-6b6a-42bf-a296-e4c2f31df20b/bucket/86f74599-61f0-4ba4-bf07-497c6e273d23.png", label: "Telegram-канал", href: "https://t.me/svodka24ustkut" },
+                    { img: "https://cdn.poehali.dev/projects/0589c48d-6b6a-42bf-a296-e4c2f31df20b/bucket/8bce33af-a1f4-448f-970b-64269f8451ff.png", label: "ВКонтакте", href: "https://vk.com/svodka24ustkut" },
+                    { img: "https://cdn.poehali.dev/projects/0589c48d-6b6a-42bf-a296-e4c2f31df20b/bucket/d44e5c19-ec02-40fc-bbd1-632c962e28ec.png", label: "Одноклассники", href: "https://ok.ru/profile/581825582472" },
+                    { img: "https://cdn.poehali.dev/projects/0589c48d-6b6a-42bf-a296-e4c2f31df20b/bucket/8c98bbd7-2d26-4d5b-8f87-15aa0670acf0.png", label: "MAX", href: "https://max.ru/join/P_HfSBqoL1_EzOFrrv_IeuUQ7u55zTDXVB0p-ODUk6E" },
                   ].map((s) => (
-                    <a key={s.label} href="#" className="flex items-center gap-2 text-sm text-news-text hover:text-news-blue transition-colors">
-                      <Icon name={s.icon} size={15} className="text-news-blue" />
+                    <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2.5 text-sm text-news-text hover:text-news-blue transition-colors">
+                      <div className="w-7 h-7 rounded-lg overflow-hidden shrink-0">
+                        <img src={s.img} alt={s.label} className="w-full h-full object-cover" />
+                      </div>
                       {s.label}
                     </a>
                   ))}

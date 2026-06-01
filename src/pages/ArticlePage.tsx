@@ -50,11 +50,14 @@ export default function ArticlePage() {
                   {article.excerpt}
                 </p>
 
-                <div className="w-full aspect-video bg-gray-100 rounded flex items-center justify-center mb-6 border border-news-border">
-                  <div className="text-center text-news-gray">
-                    <Icon name="Image" size={36} className="mx-auto mb-1 text-gray-300" />
-                    <span className="text-xs">Фото: Редакция СВОДКА 24</span>
-                  </div>
+                <div className="w-full aspect-video bg-gray-100 rounded overflow-hidden mb-6 border border-news-border flex items-center justify-center">
+                  {article.image
+                    ? <img src={article.image} alt={article.title} className="w-full h-full object-cover" />
+                    : <div className="text-center text-news-gray">
+                        <Icon name="Image" size={36} className="mx-auto mb-1 text-gray-300" />
+                        <span className="text-xs">Фото: Редакция СВОДКА 24</span>
+                      </div>
+                  }
                 </div>
 
                 <div className="text-news-text leading-relaxed space-y-4 text-sm md:text-base">

@@ -27,7 +27,7 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 shadow-lg">
 
-      {/* Верхняя полоса: гамбургер | логотип | дата */}
+      {/* Верхняя полоса */}
       <div className="bg-black px-4 py-0">
         <div className="max-w-6xl mx-auto flex items-center h-14 gap-4">
 
@@ -59,65 +59,27 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Навигационная полоса */}
-      <div className="bg-[#111] border-t border-white/10">
-        <div className="max-w-6xl mx-auto px-4">
-          <nav className="hidden md:flex items-center gap-0 overflow-x-auto">
+      {/* Выпадающее меню из гамбургера */}
+      {menuOpen && (
+        <div className="bg-[#111] border-t border-white/10 absolute w-full left-0 shadow-xl">
+          <div className="max-w-6xl mx-auto px-4 py-2">
             {navLinks.map((link) => (
               <Link
                 key={link.path}
                 to={link.path}
-                className={`px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${
+                onClick={() => setMenuOpen(false)}
+                className={`flex items-center px-3 py-3 text-sm font-medium border-b border-white/10 last:border-0 transition-colors ${
                   location.pathname === link.path
-                    ? "border-news-orange text-white font-bold"
-                    : "border-transparent text-white/60 hover:text-white hover:border-white/30"
+                    ? "text-news-orange font-bold"
+                    : "text-white/80 hover:text-white"
                 }`}
               >
                 {link.label}
               </Link>
             ))}
-          </nav>
-        </div>
-      </div>
-
-      {/* Мобильное меню (выпадает под шапкой) */}
-      {menuOpen && (
-        <div className="bg-[#111] border-t border-white/10 md:hidden">
-          {navLinks.map((link) => (
-            <Link
-              key={link.path}
-              to={link.path}
-              onClick={() => setMenuOpen(false)}
-              className={`flex items-center px-5 py-3.5 text-sm font-medium border-b border-white/10 transition-colors ${
-                location.pathname === link.path
-                  ? "text-news-orange font-bold"
-                  : "text-white/80 hover:text-white"
-              }`}
-            >
-              {link.label}
-            </Link>
-          ))}
+          </div>
         </div>
       )}
-
-      {/* Бегущая строка */}
-      <div className="bg-news-orange py-1 px-4 overflow-hidden flex items-center gap-3 text-xs">
-        <span className="shrink-0 font-black uppercase px-2 py-0.5 rounded bg-black text-white">
-          Срочно
-        </span>
-        <div className="overflow-hidden whitespace-nowrap flex-1">
-          <span className="inline-block animate-[marquee_35s_linear_infinite] font-medium text-black">
-            Добро пожаловать на СВОДКА 24 — главные новости Усть-Кута и Иркутской области • Актуально • Оперативно • Достоверно
-          </span>
-        </div>
-      </div>
-
-      <style>{`
-        @keyframes marquee {
-          0% { transform: translateX(100vw); }
-          100% { transform: translateX(-100%); }
-        }
-      `}</style>
     </header>
   );
 }

@@ -35,7 +35,7 @@ const socials = [
     color: "#7B3FE4",
     icon: (
       <img
-        src="https://cdn.poehali.dev/projects/0589c48d-6b6a-42bf-a296-e4c2f31df20b/bucket/5ebd938d-04d7-4ae1-959e-ffcc82182d86.jpg"
+        src="https://cdn.poehali.dev/projects/0589c48d-6b6a-42bf-a296-e4c2f31df20b/bucket/8c98bbd7-2d26-4d5b-8f87-15aa0670acf0.png"
         alt="MAX"
         width="26"
         height="26"

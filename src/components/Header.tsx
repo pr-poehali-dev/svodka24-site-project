@@ -11,65 +11,90 @@ const navLinks = [
   { label: "Контакты", path: "/contacts" },
 ];
 
+function getNow() {
+  return new Date().toLocaleString("ru-RU", {
+    day: "numeric",
+    month: "long",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
 
   return (
-    <header className="sticky top-0 z-50 shadow-md">
-      {/* Шапка */}
-      <div className="bg-news-blue-dark px-4 py-3">
-        <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
-          <Link to="/" className="flex items-center gap-2 shrink-0">
+    <header className="sticky top-0 z-50 shadow-lg">
+
+      {/* Верхняя полоса: гамбургер | логотип | дата */}
+      <div className="bg-black px-4 py-0">
+        <div className="max-w-6xl mx-auto flex items-center h-14 gap-4">
+
+          {/* Гамбургер */}
+          <button
+            className="flex items-center gap-2 text-white/80 hover:text-white transition-colors shrink-0"
+            onClick={() => setMenuOpen(!menuOpen)}
+            aria-label="Меню"
+          >
+            <Icon name={menuOpen ? "X" : "Menu"} size={22} />
+          </button>
+
+          {/* Логотип — по центру */}
+          <Link to="/" className="flex-1 flex justify-center items-center gap-2.5">
             <img
               src="https://cdn.poehali.dev/projects/0589c48d-6b6a-42bf-a296-e4c2f31df20b/bucket/4c9fb864-06bd-46fc-8e04-6c53903a73de.jpg"
-              alt="СВОДКА 24 Усть-Кут"
-              className="h-10 w-10 rounded object-cover"
+              alt="СВОДКА 24"
+              className="h-8 w-8 rounded object-cover"
             />
-            <div>
-              <div className="text-white font-black text-lg leading-none" style={{ fontFamily: "'Roboto Condensed', sans-serif" }}>
-                СВОДКА 24
-              </div>
-              <div className="text-news-orange text-xs leading-none" style={{ fontFamily: "'Roboto Condensed', sans-serif" }}>
-                УСТЬ-КУТ
-              </div>
-            </div>
+            <span
+              className="text-white font-black text-2xl tracking-tight leading-none"
+              style={{ fontFamily: "'Roboto Condensed', sans-serif", letterSpacing: "-0.02em" }}
+            >
+              СВОДКА&nbsp;<span className="text-news-orange">24</span>
+            </span>
           </Link>
 
-          <nav className="hidden md:flex items-center gap-1">
+          {/* Дата и время */}
+          <div className="shrink-0 text-white/50 text-xs text-right hidden sm:block">
+            {getNow()}
+          </div>
+        </div>
+      </div>
+
+      {/* Навигационная полоса */}
+      <div className="bg-[#111] border-t border-white/10">
+        <div className="max-w-6xl mx-auto px-4">
+          <nav className="hidden md:flex items-center gap-0 overflow-x-auto">
             {navLinks.map((link) => (
               <Link
                 key={link.path}
                 to={link.path}
-                className={`px-3 py-1.5 rounded text-sm font-medium transition-colors ${
+                className={`px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${
                   location.pathname === link.path
-                    ? "bg-news-orange text-news-blue-dark font-bold"
-                    : "text-white/90 hover:text-white hover:bg-white/10"
+                    ? "border-news-orange text-white font-bold"
+                    : "border-transparent text-white/60 hover:text-white hover:border-white/30"
                 }`}
               >
                 {link.label}
               </Link>
             ))}
           </nav>
-
-          <button className="md:hidden text-white" onClick={() => setMenuOpen(!menuOpen)}>
-            <Icon name={menuOpen ? "X" : "Menu"} size={22} />
-          </button>
         </div>
       </div>
 
-      {/* Мобильное меню */}
+      {/* Мобильное меню (выпадает под шапкой) */}
       {menuOpen && (
-        <div className="md:hidden bg-news-blue">
+        <div className="bg-[#111] border-t border-white/10 md:hidden">
           {navLinks.map((link) => (
             <Link
               key={link.path}
               to={link.path}
               onClick={() => setMenuOpen(false)}
-              className={`block px-5 py-3 text-sm font-medium border-b border-white/10 transition-colors ${
+              className={`flex items-center px-5 py-3.5 text-sm font-medium border-b border-white/10 transition-colors ${
                 location.pathname === link.path
-                  ? "bg-news-orange text-news-blue-dark font-bold"
-                  : "text-white/90 hover:bg-white/10"
+                  ? "text-news-orange font-bold"
+                  : "text-white/80 hover:text-white"
               }`}
             >
               {link.label}
@@ -80,11 +105,11 @@ export default function Header() {
 
       {/* Бегущая строка */}
       <div className="bg-news-orange py-1 px-4 overflow-hidden flex items-center gap-3 text-xs">
-        <span className="shrink-0 font-black uppercase px-2 py-0.5 rounded bg-news-blue-dark text-white">
+        <span className="shrink-0 font-black uppercase px-2 py-0.5 rounded bg-black text-white">
           Срочно
         </span>
         <div className="overflow-hidden whitespace-nowrap flex-1">
-          <span className="inline-block animate-[marquee_35s_linear_infinite] font-medium text-news-blue-dark">
+          <span className="inline-block animate-[marquee_35s_linear_infinite] font-medium text-black">
             Добро пожаловать на СВОДКА 24 — главные новости Усть-Кута и Иркутской области • Актуально • Оперативно • Достоверно
           </span>
         </div>

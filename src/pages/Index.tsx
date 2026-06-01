@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useState, useEffect, useRef } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ArticleCard from "@/components/ArticleCard";
@@ -7,9 +8,51 @@ import { articles as staticArticles, categories, getFeaturedArticle } from "@/da
 import { useArticles } from "@/hooks/useArticles";
 import AdBanner from "@/components/AdBanner";
 
+const API_URL = "https://functions.poehali.dev/2cdc5e6d-7a6f-402b-baa5-6bbb647f3a5d";
+
 export default function Index() {
   const { articles: apiArticles, loading } = useArticles();
-  const articles = apiArticles.length > 0 ? apiArticles : staticArticles;
+  const [articles, setArticles] = useState(apiArticles.length > 0 ? apiArticles : staticArticles);
+  const [newCount, setNewCount] = useState(0);
+  const lastIdRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (apiArticles.length > 0) {
+      setArticles(apiArticles);
+      if (lastIdRef.current === null) {
+        lastIdRef.current = apiArticles[0]?.id ?? null;
+      }
+    }
+  }, [apiArticles]);
+
+  // Polling каждые 30 секунд
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      try {
+        const res = await fetch(API_URL);
+        const data = await res.json();
+        if (!Array.isArray(data) || data.length === 0) return;
+        const latestId = data[0]?.id;
+        if (lastIdRef.current !== null && latestId > lastIdRef.current) {
+          const count = data.filter((a: { id: number }) => a.id > lastIdRef.current!).length;
+          setNewCount(count);
+        }
+      } catch (_) { /* ignore */ }
+    }, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleRefresh = async () => {
+    try {
+      const res = await fetch(API_URL);
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        setArticles(data);
+        lastIdRef.current = data[0]?.id ?? null;
+        setNewCount(0);
+      }
+    } catch (_) { /* ignore */ }
+  };
 
   const featured = articles.find(a => a.featured) || articles[0];
   const gridNews = articles.filter((a) => a.id !== featured?.id).slice(0, 3);
@@ -29,6 +72,19 @@ export default function Index() {
             <div className="flex items-center gap-2 text-xs text-news-gray mb-4">
               <Icon name="Loader" size={13} className="animate-spin text-news-blue" />
               Загрузка новостей...
+            </div>
+          )}
+
+          {newCount > 0 && (
+            <div className="flex justify-center mb-4">
+              <button
+                onClick={handleRefresh}
+                className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-news-blue text-white text-sm font-bold shadow-lg hover:bg-news-blue-dark transition-colors animate-bounce"
+                style={{ fontFamily: "'Roboto Condensed', sans-serif" }}
+              >
+                <Icon name="Bell" size={15} className="text-news-orange" />
+                Новые материалы +{newCount}
+              </button>
             </div>
           )}
 

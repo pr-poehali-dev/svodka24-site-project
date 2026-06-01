@@ -58,7 +58,7 @@ export default function Header() {
 
       {/* Компактный квадрат — появляется при скролле, прилипает слева */}
       <div
-        className={`fixed top-0 left-0 z-50 bg-black shadow-lg flex items-center gap-3 px-3 transition-all duration-300 ${
+        className={`fixed top-3 left-3 z-50 bg-black shadow-xl flex items-center gap-3 px-3 rounded-xl transition-all duration-300 ${
           scrolled ? "h-12 w-auto opacity-100 pointer-events-auto" : "h-0 w-0 opacity-0 pointer-events-none overflow-hidden"
         }`}
       >

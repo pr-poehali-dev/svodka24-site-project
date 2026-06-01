@@ -92,7 +92,7 @@ export default function ContactsPage() {
                 <div className="space-y-3">
                   {[
                     { icon: "MapPin", text: "г. Усть-Кут, Иркутская область" },
-                    { icon: "Mail", text: "info@svodka24.ru", href: "mailto:info@svodka24.ru" },
+                    { icon: "Mail", text: "info.svodka24ustkut@mail.ru", href: "mailto:info.svodka24ustkut@mail.ru" },
                     { icon: "Phone", text: "+7 (XXX) XXX-XX-XX", href: "tel:+7" },
                     { icon: "Clock", text: "Круглосуточно" },
                   ].map((c) => (

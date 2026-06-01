@@ -3,19 +3,38 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Icon from "@/components/ui/icon";
 
+const SEND_MAIL_URL = "https://functions.poehali.dev/c2fca549-e91a-40cf-8a9f-bf3ee7a72a0d";
+
 export default function ContactsPage() {
   const [form, setForm] = useState({ name: "", email: "", phone: "", subject: "", message: "" });
   const [sent, setSent] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSent(true);
-    setForm({ name: "", email: "", phone: "", subject: "", message: "" });
-    setTimeout(() => setSent(false), 5000);
+    setSending(true);
+    setError("");
+    try {
+      const res = await fetch(SEND_MAIL_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      const data = await res.json();
+      if (!res.ok) { setError(data.error || "Ошибка отправки"); return; }
+      setSent(true);
+      setForm({ name: "", email: "", phone: "", subject: "", message: "" });
+      setTimeout(() => setSent(false), 6000);
+    } catch {
+      setError("Не удалось отправить. Попробуйте позже.");
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
@@ -77,10 +96,16 @@ export default function ContactsPage() {
                     className="w-full border border-news-border rounded px-3 py-2 text-sm focus:outline-none resize-none"
                     placeholder="Опишите вашу новость или вопрос..." />
                 </div>
+                {error && (
+                  <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 text-sm rounded flex items-center gap-2">
+                    <Icon name="AlertCircle" size={15} />{error}
+                  </div>
+                )}
                 <div className="flex items-center justify-between">
                   <p className="text-xs text-news-gray">* Поля обязательны</p>
-                  <button type="submit" className="flex items-center gap-2 text-sm font-bold px-6 py-2.5 rounded bg-news-blue text-white hover:opacity-90 transition-opacity">
-                    <Icon name="Send" size={14} />Отправить
+                  <button type="submit" disabled={sending} className="flex items-center gap-2 text-sm font-bold px-6 py-2.5 rounded bg-news-blue text-white hover:opacity-90 transition-opacity disabled:opacity-60">
+                    <Icon name={sending ? "Loader" : "Send"} size={14} className={sending ? "animate-spin" : ""} />
+                    {sending ? "Отправляю..." : "Отправить"}
                   </button>
                 </div>
               </form>

@@ -118,7 +118,6 @@ export default function ContactsPage() {
                   {[
                     { icon: "MapPin", text: "г. Усть-Кут, Иркутская область" },
                     { icon: "Mail", text: "info.svodka24ustkut@mail.ru", href: "mailto:info.svodka24ustkut@mail.ru" },
-                    { icon: "Phone", text: "+7 (XXX) XXX-XX-XX", href: "tel:+7" },
                     { icon: "Clock", text: "Круглосуточно" },
                   ].map((c) => (
                     <div key={c.text} className="flex items-start gap-2.5">

@@ -1,0 +1,10 @@
+{
+  "tests": [
+    {
+      "name": "GET active banners",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 200
+    }
+  ]
+}

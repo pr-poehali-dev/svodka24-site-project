@@ -5,6 +5,19 @@ import { categories } from "@/data/articles";
 
 const API_URL = "https://functions.poehali.dev/2cdc5e6d-7a6f-402b-baa5-6bbb647f3a5d";
 const UPLOAD_URL = "https://functions.poehali.dev/9ef5d74f-c930-433d-8dbe-642c7b97db7d";
+const BANNERS_URL = "https://functions.poehali.dev/cc70a8eb-2952-4967-8043-fe5523700395";
+
+interface Banner {
+  id: number;
+  title: string;
+  description: string;
+  image_url: string;
+  link_url: string;
+  button_text: string;
+  active: boolean;
+}
+
+const EMPTY_BANNER = { title: "", description: "", image_url: "", link_url: "", button_text: "Подробнее", active: true };
 
 interface Article {
   id: number;
@@ -38,8 +51,15 @@ export default function AdminPage() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
-  const [tab, setTab] = useState<"list" | "add">("list");
+  const [tab, setTab] = useState<"list" | "add" | "banners">("list");
   const [uploading, setUploading] = useState(false);
+
+  const [banners, setBanners] = useState<Banner[]>([]);
+  const [bannerForm, setBannerForm] = useState(EMPTY_BANNER);
+  const [bannerSaving, setBannerSaving] = useState(false);
+  const [bannerSaved, setBannerSaved] = useState(false);
+  const [bannerUploading, setBannerUploading] = useState(false);
+  const [editingBanner, setEditingBanner] = useState<Banner | null>(null);
 
   const fetchArticles = async (adminKey: string) => {
     setLoading(true);
@@ -76,8 +96,67 @@ export default function AdminPage() {
     if (key) {
       setAuthed(true);
       fetchArticles(key);
+      fetchBanners(key);
     }
   }, []);
+
+  const fetchBanners = async (adminKey: string) => {
+    const res = await fetch(`${BANNERS_URL}?all=1`, { headers: { 'X-Admin-Key': adminKey } });
+    const data = await res.json();
+    if (Array.isArray(data)) setBanners(data);
+  };
+
+  const handleBannerImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setBannerUploading(true);
+    const reader = new FileReader();
+    reader.onload = async () => {
+      const base64 = (reader.result as string).split(',')[1];
+      const res = await fetch(UPLOAD_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ file: base64, filename: file.name, content_type: file.type }),
+      });
+      const data = await res.json();
+      if (data.url) setBannerForm(prev => ({ ...prev, image_url: data.url }));
+      setBannerUploading(false);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleBannerSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setBannerSaving(true);
+    const method = editingBanner ? 'PUT' : 'POST';
+    const body = editingBanner ? { ...bannerForm, id: editingBanner.id } : bannerForm;
+    await fetch(BANNERS_URL, {
+      method,
+      headers: { 'Content-Type': 'application/json', 'X-Admin-Key': key },
+      body: JSON.stringify(body),
+    });
+    setBannerSaving(false);
+    setBannerSaved(true);
+    setBannerForm(EMPTY_BANNER);
+    setEditingBanner(null);
+    fetchBanners(key);
+    setTimeout(() => setBannerSaved(false), 3000);
+  };
+
+  const handleDeleteBanner = async (id: number) => {
+    if (!confirm('Удалить баннер?')) return;
+    await fetch(BANNERS_URL, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json', 'X-Admin-Key': key },
+      body: JSON.stringify({ id }),
+    });
+    fetchBanners(key);
+  };
+
+  const handleEditBanner = (b: Banner) => {
+    setEditingBanner(b);
+    setBannerForm({ title: b.title, description: b.description, image_url: b.image_url, link_url: b.link_url, button_text: b.button_text, active: b.active });
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
@@ -225,6 +304,13 @@ export default function AdminPage() {
           >
             <Icon name="Plus" size={14} className="inline mr-1.5" />
             Добавить новость
+          </button>
+          <button
+            onClick={() => setTab("banners")}
+            className={`px-4 py-2 rounded text-sm font-bold transition-colors ${tab === "banners" ? "bg-news-orange text-white" : "bg-white border border-news-border text-news-text hover:border-news-orange"}`}
+          >
+            <Icon name="Megaphone" size={14} className="inline mr-1.5" />
+            Реклама ({banners.length})
           </button>
         </div>
 
@@ -374,6 +460,123 @@ export default function AdminPage() {
               </button>
             </div>
           </form>
+        )}
+
+        {/* Реклама */}
+        {tab === "banners" && (
+          <div className="space-y-6">
+            {bannerSaved && (
+              <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded text-sm flex items-center gap-2">
+                <Icon name="CheckCircle" size={15} /> Баннер сохранён!
+              </div>
+            )}
+
+            {/* Форма */}
+            <div className="news-card p-5">
+              <h2 className="font-black text-base mb-4" style={{ fontFamily: "'Roboto Condensed', sans-serif" }}>
+                {editingBanner ? "Редактировать баннер" : "Новый рекламный блок"}
+              </h2>
+              <form onSubmit={handleBannerSubmit} className="space-y-4">
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-news-gray mb-1.5">Заголовок</label>
+                  <input value={bannerForm.title} onChange={e => setBannerForm(p => ({ ...p, title: e.target.value }))}
+                    className="w-full border border-news-border rounded px-3 py-2.5 text-sm focus:outline-none focus:border-news-blue"
+                    placeholder="Название организации или товара" />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-news-gray mb-1.5">Текст рекламы *</label>
+                  <textarea value={bannerForm.description} onChange={e => setBannerForm(p => ({ ...p, description: e.target.value }))}
+                    required rows={3}
+                    className="w-full border border-news-border rounded px-3 py-2.5 text-sm focus:outline-none focus:border-news-blue resize-none"
+                    placeholder="Краткое описание предложения, акции или услуги" />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-news-gray mb-1.5">Ссылка (куда ведёт)</label>
+                    <input value={bannerForm.link_url} onChange={e => setBannerForm(p => ({ ...p, link_url: e.target.value }))}
+                      className="w-full border border-news-border rounded px-3 py-2.5 text-sm focus:outline-none focus:border-news-blue"
+                      placeholder="https://..." />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-news-gray mb-1.5">Текст кнопки</label>
+                    <input value={bannerForm.button_text} onChange={e => setBannerForm(p => ({ ...p, button_text: e.target.value }))}
+                      className="w-full border border-news-border rounded px-3 py-2.5 text-sm focus:outline-none focus:border-news-blue"
+                      placeholder="Подробнее" />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-news-gray mb-1.5">Фото (необязательно)</label>
+                  <div className="flex gap-2 items-center mb-2">
+                    <label className={`flex items-center gap-2 px-4 py-2 rounded border cursor-pointer text-sm font-medium transition-colors ${bannerUploading ? 'bg-news-bg text-news-gray border-news-border' : 'bg-news-orange text-white border-news-orange hover:opacity-90'}`}>
+                      <Icon name={bannerUploading ? "Loader" : "Upload"} size={15} className={bannerUploading ? "animate-spin" : ""} />
+                      {bannerUploading ? "Загружаю..." : "Загрузить фото"}
+                      <input type="file" accept="image/*" className="hidden" onChange={handleBannerImageUpload} disabled={bannerUploading} />
+                    </label>
+                    <span className="text-xs text-news-gray">или вставь ссылку:</span>
+                  </div>
+                  <input value={bannerForm.image_url} onChange={e => setBannerForm(p => ({ ...p, image_url: e.target.value }))}
+                    className="w-full border border-news-border rounded px-3 py-2.5 text-sm focus:outline-none focus:border-news-blue"
+                    placeholder="https://..." />
+                  {bannerForm.image_url && (
+                    <img src={bannerForm.image_url} alt="preview" className="mt-2 h-24 rounded object-contain border border-news-border" />
+                  )}
+                </div>
+                <div className="flex items-center gap-3 p-3 rounded border border-news-border bg-news-bg">
+                  <input type="checkbox" id="banner_active" checked={bannerForm.active}
+                    onChange={e => setBannerForm(p => ({ ...p, active: e.target.checked }))} className="w-4 h-4 accent-news-orange" />
+                  <label htmlFor="banner_active" className="text-sm font-medium text-news-text cursor-pointer">
+                    Показывать на сайте
+                  </label>
+                </div>
+                <div className="flex items-center gap-3">
+                  <button type="submit" disabled={bannerSaving}
+                    className="bg-news-orange text-white font-bold px-8 py-2.5 rounded hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center gap-2">
+                    {bannerSaving ? <Icon name="Loader" size={15} className="animate-spin" /> : <Icon name="Megaphone" size={15} />}
+                    {bannerSaving ? "Сохраняю..." : editingBanner ? "Сохранить" : "Добавить баннер"}
+                  </button>
+                  {editingBanner && (
+                    <button type="button" onClick={() => { setEditingBanner(null); setBannerForm(EMPTY_BANNER); }}
+                      className="text-sm text-news-gray hover:text-news-text transition-colors">
+                      Отмена
+                    </button>
+                  )}
+                </div>
+              </form>
+            </div>
+
+            {/* Список баннеров */}
+            {banners.length > 0 && (
+              <div className="news-card overflow-hidden">
+                <div className="px-5 py-3 border-b border-news-border bg-news-bg">
+                  <h3 className="font-bold text-sm">Активные баннеры</h3>
+                </div>
+                {banners.map((b) => (
+                  <div key={b.id} className={`px-5 py-4 border-b border-news-border last:border-0 flex items-start gap-4 ${!b.active ? 'opacity-50' : ''}`}>
+                    {b.image_url && <img src={b.image_url} alt="" className="w-16 h-16 object-cover rounded shrink-0" />}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        {b.active
+                          ? <span className="text-[10px] bg-green-100 text-green-700 font-bold px-2 py-0.5 rounded">Активен</span>
+                          : <span className="text-[10px] bg-gray-100 text-gray-500 font-bold px-2 py-0.5 rounded">Скрыт</span>
+                        }
+                      </div>
+                      {b.title && <p className="font-bold text-sm text-news-text">{b.title}</p>}
+                      <p className="text-sm text-news-gray line-clamp-2">{b.description}</p>
+                      {b.link_url && <p className="text-xs text-news-blue truncate mt-0.5">{b.link_url}</p>}
+                    </div>
+                    <div className="flex gap-2 shrink-0">
+                      <button onClick={() => handleEditBanner(b)} className="text-xs px-3 py-1.5 rounded border border-news-border hover:border-news-blue text-news-gray hover:text-news-blue transition-colors">
+                        <Icon name="Pencil" size={13} />
+                      </button>
+                      <button onClick={() => handleDeleteBanner(b.id)} className="text-xs px-3 py-1.5 rounded border border-news-border hover:border-red-400 text-news-gray hover:text-red-500 transition-colors">
+                        <Icon name="Trash2" size={13} />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         )}
       </div>
     </div>

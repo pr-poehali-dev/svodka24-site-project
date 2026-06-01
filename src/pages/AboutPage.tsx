@@ -118,9 +118,24 @@ export default function AboutPage() {
                   ))}
                 </div>
               </div>
-              <Link to="/contacts" className="block text-center text-sm font-bold py-2.5 rounded bg-news-orange text-news-blue-dark hover:opacity-90 transition-opacity">
-                Написать в редакцию
-              </Link>
+              <div className="rounded-xl overflow-hidden shadow-lg" style={{ background: "linear-gradient(135deg, #0D47A1 0%, #1565C0 50%, #FF6D00 100%)" }}>
+                <div className="p-5 text-white">
+                  <div className="text-2xl mb-2">📣</div>
+                  <h3 className="font-black text-lg leading-tight mb-2" style={{ fontFamily: "'Roboto Condensed', sans-serif" }}>
+                    Продвигайте свой бизнес в Усть‑Куте вместе с «СВОДКА 24 УСТЬ‑КУТ»!
+                  </h3>
+                  <p className="text-xs text-white/80 leading-relaxed mb-4">
+                    Охватите тысячи жителей города и района. Реклама в новостях, баннеры, спецпроекты.
+                  </p>
+                  <Link
+                    to="/contacts"
+                    className="inline-block w-full text-center text-sm font-black uppercase tracking-wider px-4 py-2.5 rounded-lg bg-news-orange text-white hover:opacity-90 transition-opacity"
+                    style={{ fontFamily: "'Roboto Condensed', sans-serif" }}
+                  >
+                    Разместить рекламу
+                  </Link>
+                </div>
+              </div>
             </div>
           </div>
         </div>

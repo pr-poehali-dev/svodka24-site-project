@@ -28,8 +28,8 @@ export default function Header() {
     <header className="sticky top-0 z-50 shadow-lg">
 
       {/* Верхняя полоса */}
-      <div className="bg-black px-4 py-0">
-        <div className="max-w-6xl mx-auto flex items-center h-14 gap-4">
+      <div className="bg-black px-6 py-0">
+        <div className="max-w-screen-2xl mx-auto flex items-center h-20 gap-6">
 
           {/* Гамбургер */}
           <button
@@ -37,15 +37,15 @@ export default function Header() {
             onClick={() => setMenuOpen(!menuOpen)}
             aria-label="Меню"
           >
-            <Icon name={menuOpen ? "X" : "Menu"} size={22} />
+            <Icon name={menuOpen ? "X" : "Menu"} size={32} />
           </button>
 
           {/* Логотип */}
           <Link to="/" className="shrink-0 leading-none">
-            <div className="text-white font-black text-xl leading-none" style={{ fontFamily: "'Roboto Condensed', sans-serif" }}>
+            <div className="text-white font-black text-3xl leading-none" style={{ fontFamily: "'Roboto Condensed', sans-serif" }}>
               СВОДКА <span className="text-news-orange">24</span>
             </div>
-            <div className="text-white/50 text-[10px] font-medium tracking-widest uppercase leading-none mt-0.5">
+            <div className="text-white/50 text-xs font-medium tracking-widest uppercase leading-none mt-1">
               Усть-Кут
             </div>
           </Link>
@@ -53,7 +53,7 @@ export default function Header() {
           <div className="flex-1" />
 
           {/* Дата и время */}
-          <div className="shrink-0 text-white/50 text-xs text-right hidden sm:block">
+          <div className="shrink-0 text-white/50 text-sm text-right hidden sm:block">
             {getNow()}
           </div>
         </div>

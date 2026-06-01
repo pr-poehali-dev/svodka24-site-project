@@ -33,7 +33,7 @@ export default function ArticleCard({ article, variant = "default" }: ArticleCar
       <Link to={`/article/${article.id}`} className="news-card block group">
         <div className="aspect-square bg-gray-100 relative flex items-center justify-center overflow-hidden">
           {article.image
-            ? <img src={article.image} alt={article.title} className="absolute inset-0 w-full h-full object-contain" />
+            ? <img src={article.image} alt={article.title} className="absolute inset-0 w-full h-full object-cover" />
             : <Icon name="Newspaper" size={48} className="text-gray-300" />
           }
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent flex flex-col justify-end p-5">
@@ -60,7 +60,7 @@ export default function ArticleCard({ article, variant = "default" }: ArticleCar
     return (
       <Link to={`/article/${article.id}`} className="news-card block group">
         <div className="aspect-square bg-gray-100 flex items-center justify-center relative overflow-hidden">
-          {article.image && <img src={article.image} alt={article.title} className="absolute inset-0 w-full h-full object-contain" />}
+          {article.image && <img src={article.image} alt={article.title} className="absolute inset-0 w-full h-full object-cover" />}
           {!article.image && <Icon name="Newspaper" size={32} className="text-gray-300" />}
         </div>
         <div className="p-3">

@@ -5,6 +5,7 @@ import ArticleCard from "@/components/ArticleCard";
 import Icon from "@/components/ui/icon";
 import { articles as staticArticles, categories, getFeaturedArticle } from "@/data/articles";
 import { useArticles } from "@/hooks/useArticles";
+import AdBanner from "@/components/AdBanner";
 
 export default function Index() {
   const { articles: apiArticles, loading } = useArticles();
@@ -101,6 +102,8 @@ export default function Index() {
                   </div>
                 ))}
               </div>
+
+              <AdBanner />
 
               <div className="bg-news-blue rounded-lg p-5 text-white text-center">
                 <Icon name="Send" size={28} className="mx-auto mb-2 opacity-80" />

@@ -6,6 +6,7 @@ import CommentSection from "@/components/CommentSection";
 import Icon from "@/components/ui/icon";
 import { getArticleById, getRecentArticles } from "@/data/articles";
 import { useArticle, useArticles } from "@/hooks/useArticles";
+import AdBanner from "@/components/AdBanner";
 
 export default function ArticlePage() {
   const { id } = useParams<{ id: string }>();
@@ -104,6 +105,8 @@ export default function ArticlePage() {
                 <h2 className="section-title mb-4">Читайте также</h2>
                 {related.map((a) => <ArticleCard key={a.id} article={a} variant="compact" />)}
               </div>
+              <AdBanner />
+
               <div className="bg-news-blue rounded-lg p-5 text-white text-center">
                 <Icon name="Send" size={24} className="mx-auto mb-2 opacity-80" />
                 <h3 className="font-bold text-sm mb-1">Прислать новость</h3>

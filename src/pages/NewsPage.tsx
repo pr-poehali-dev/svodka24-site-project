@@ -2,6 +2,7 @@ import { useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ArticleCard from "@/components/ArticleCard";
+import AdBanner from "@/components/AdBanner";
 import { articles, categories } from "@/data/articles";
 
 export default function NewsPage() {
@@ -63,17 +64,20 @@ export default function NewsPage() {
                 : filtered.map((a) => <ArticleCard key={a.id} article={a} />)
               }
             </div>
-            <div className="news-card p-4 h-fit">
-              <h2 className="section-title mb-4">Популярное</h2>
-              {[...articles].sort((a, b) => b.views - a.views).slice(0, 5).map((a, idx) => (
-                <div key={a.id} className="border-b border-news-border last:border-0 py-2.5 flex gap-2 items-start">
-                  <span className="font-black text-xl leading-none shrink-0 text-news-orange" style={{ fontFamily: "'Roboto Condensed', sans-serif" }}>{idx + 1}</span>
-                  <Link to={`/article/${a.id}`} className="group">
-                    <span className="tag block mb-0.5">{a.category}</span>
-                    <span className="text-sm font-medium leading-snug text-news-text group-hover:text-news-blue transition-colors">{a.title}</span>
-                  </Link>
-                </div>
-              ))}
+            <div className="space-y-4">
+              <div className="news-card p-4 h-fit">
+                <h2 className="section-title mb-4">Популярное</h2>
+                {[...articles].sort((a, b) => b.views - a.views).slice(0, 5).map((a, idx) => (
+                  <div key={a.id} className="border-b border-news-border last:border-0 py-2.5 flex gap-2 items-start">
+                    <span className="font-black text-xl leading-none shrink-0 text-news-orange" style={{ fontFamily: "'Roboto Condensed', sans-serif" }}>{idx + 1}</span>
+                    <Link to={`/article/${a.id}`} className="group">
+                      <span className="tag block mb-0.5">{a.category}</span>
+                      <span className="text-sm font-medium leading-snug text-news-text group-hover:text-news-blue transition-colors">{a.title}</span>
+                    </Link>
+                  </div>
+                ))}
+              </div>
+              <AdBanner />
             </div>
           </div>
         </div>

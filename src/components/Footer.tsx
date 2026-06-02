@@ -1,4 +1,7 @@
 import { Link } from "react-router-dom";
+import Icon from "@/components/ui/icon";
+
+const RSS_URL = "https://functions.poehali.dev/b0cfaa50-3212-45f2-8bd8-f0499436a1e7";
 
 const footerLinks = [
   { label: "Редакция", path: "/about" },
@@ -6,7 +9,6 @@ const footerLinks = [
   { label: "Контакты", path: "/contacts" },
   { label: "Пресс-релизы", path: "/contacts" },
   { label: "Вакансии", path: "/about" },
-  { label: "RSS", path: "/news" },
   { label: "Правовая информация", path: "/about" },
 ];
 
@@ -28,6 +30,15 @@ export default function Footer() {
               {l.label}
             </Link>
           ))}
+          <a
+            href={RSS_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1 text-sm text-orange-500 hover:text-orange-600 transition-colors font-medium"
+          >
+            <Icon name="Rss" size={14} />
+            RSS
+          </a>
         </div>
 
         {/* Копирайт */}

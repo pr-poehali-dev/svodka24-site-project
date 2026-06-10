@@ -2,7 +2,6 @@ import json
 import os
 import psycopg2
 
-
 def handler(event: dict, context) -> dict:
     """API для работы с новостями: GET — список, POST — создать, DELETE — удалить"""
 

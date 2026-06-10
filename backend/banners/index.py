@@ -2,7 +2,6 @@ import os
 import json
 import psycopg2
 
-
 SCHEMA = os.environ.get('MAIN_DB_SCHEMA', 'public')
 
 CORS = {

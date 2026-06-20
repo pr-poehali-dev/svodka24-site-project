@@ -50,11 +50,11 @@ def handler(event: dict, context) -> dict:
                 return {'statusCode': 200, 'headers': cors, 'body': json.dumps(articles, ensure_ascii=False)}
 
         if method == 'POST':
-            admin_key = (event.get('headers') or {}).get('X-Admin-Key', '')
+            body = json.loads(event.get('body') or '{}')
+            admin_key = body.get('admin_key', '') or (event.get('headers') or {}).get('X-Admin-Key', '')
             if admin_key != os.environ.get('ADMIN_KEY', ''):
                 return {'statusCode': 403, 'headers': cors, 'body': json.dumps({'error': 'Forbidden'})}
 
-            body = json.loads(event.get('body') or '{}')
             title = body.get('title', '').strip()
             excerpt = body.get('excerpt', '').strip()
             content = body.get('content', '').strip()
@@ -78,7 +78,8 @@ def handler(event: dict, context) -> dict:
             return {'statusCode': 200, 'headers': cors, 'body': json.dumps({'id': new_id, 'ok': True})}
 
         if method == 'DELETE':
-            admin_key = (event.get('headers') or {}).get('X-Admin-Key', '')
+            del_body = json.loads(event.get('body') or '{}')
+            admin_key = del_body.get('admin_key', '') or (event.get('headers') or {}).get('X-Admin-Key', '')
             if admin_key != os.environ.get('ADMIN_KEY', ''):
                 return {'statusCode': 403, 'headers': cors, 'body': json.dumps({'error': 'Forbidden'})}
 

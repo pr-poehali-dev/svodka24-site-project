@@ -77,8 +77,8 @@ export default function AdminPage() {
     // Проверяем ключ отправив тестовый POST
     const res = await fetch(API_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'X-Admin-Key': keyInput },
-      body: JSON.stringify({ title: '', excerpt: '', content: '', category: '' }),
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ admin_key: keyInput, title: '', excerpt: '', content: '', category: '' }),
     });
     if (res.status === 403) {
       setAuthError(true);
@@ -101,7 +101,7 @@ export default function AdminPage() {
   }, []);
 
   const fetchBanners = async (adminKey: string) => {
-    const res = await fetch(`${BANNERS_URL}?all=1`, { headers: { 'X-Admin-Key': adminKey } });
+    const res = await fetch(`${BANNERS_URL}?all=1&admin_key=${encodeURIComponent(adminKey)}`);
     const data = await res.json();
     if (Array.isArray(data)) setBanners(data);
   };
@@ -132,8 +132,8 @@ export default function AdminPage() {
     const body = editingBanner ? { ...bannerForm, id: editingBanner.id } : bannerForm;
     await fetch(BANNERS_URL, {
       method,
-      headers: { 'Content-Type': 'application/json', 'X-Admin-Key': key },
-      body: JSON.stringify(body),
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...body, admin_key: key }),
     });
     setBannerSaving(false);
     setBannerSaved(true);
@@ -147,8 +147,8 @@ export default function AdminPage() {
     if (!confirm('Удалить баннер?')) return;
     await fetch(BANNERS_URL, {
       method: 'DELETE',
-      headers: { 'Content-Type': 'application/json', 'X-Admin-Key': key },
-      body: JSON.stringify({ id }),
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, admin_key: key }),
     });
     fetchBanners(key);
   };
@@ -195,8 +195,8 @@ export default function AdminPage() {
     try {
       const res = await fetch(API_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'X-Admin-Key': key },
-        body: JSON.stringify(form),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...form, admin_key: key }),
       });
       const data = await res.json();
       if (!res.ok) { setError(data.error || "Ошибка"); return; }
@@ -214,7 +214,8 @@ export default function AdminPage() {
     if (!confirm("Удалить новость?")) return;
     await fetch(`${API_URL}?id=${id}`, {
       method: 'DELETE',
-      headers: { 'X-Admin-Key': key },
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ admin_key: key }),
     });
     setArticles(prev => prev.filter(a => a.id !== id));
   };

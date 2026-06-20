@@ -13,8 +13,11 @@ CORS = {
 def get_conn():
     return psycopg2.connect(os.environ['DATABASE_URL'])
 
-def check_admin(event):
-    key = event.get('headers', {}).get('X-Admin-Key') or event.get('headers', {}).get('x-admin-key')
+def check_admin(event, body=None):
+    key = (body or {}).get('admin_key') or \
+          (event.get('queryStringParameters') or {}).get('admin_key') or \
+          (event.get('headers') or {}).get('X-Admin-Key') or \
+          (event.get('headers') or {}).get('x-admin-key')
     return key == os.environ.get('ADMIN_KEY')
 
 def handler(event: dict, context) -> dict:
@@ -31,7 +34,7 @@ def handler(event: dict, context) -> dict:
     # GET — вернуть активные баннеры (публично)
     if method == 'GET':
         params = event.get('queryStringParameters') or {}
-        if params.get('all') and check_admin(event):
+        if params.get('all') and check_admin(event, body):
             cur.execute(f"SELECT id, title, description, image_url, link_url, button_text, active, created_at FROM {SCHEMA}.banners ORDER BY created_at DESC")
         else:
             cur.execute(f"SELECT id, title, description, image_url, link_url, button_text, active, created_at FROM {SCHEMA}.banners WHERE active = true ORDER BY created_at DESC")
@@ -41,7 +44,7 @@ def handler(event: dict, context) -> dict:
         conn.close()
         return {'statusCode': 200, 'headers': CORS, 'body': json.dumps(result, ensure_ascii=False)}
 
-    if not check_admin(event):
+    if not check_admin(event, body):
         conn.close()
         return {'statusCode': 403, 'headers': CORS, 'body': json.dumps({'error': 'Forbidden'})}
 
